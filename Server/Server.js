@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 // mongodb connection
 
 const connection = process.env.MONGO_DB_CONNECTION;
-// const connection = "mongodb+srv://Bright:Mensah12@cluster0.x0dii2e.mongodb.net/?retryWrites=true&w=majority"
 
 mongoose
   .connect(connection)
