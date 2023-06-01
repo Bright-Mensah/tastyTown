@@ -162,7 +162,7 @@ app.post("/sendEmail", (req, res) => {
         console.log(generateRandomCode);
 
         const sendEmail = {
-          from: "mensahokobright@gmail.com",
+          from: process.env.FROM,
           to: req.body.email,
           subject: "Password Reset Code",
           text: "This is a code to reset password",
@@ -170,12 +170,12 @@ app.post("/sendEmail", (req, res) => {
         };
 
         const transporter = nodemailer.createTransport({
-          service: "gmail",
-          port: 465,
+          service: process.env.SERVICES,
+          port: process.env.EMAILPORT,
           secure: true,
           auth: {
-            user: "mensahokobright@gmail.com",
-            pass: "azppmvjolkvwtfmh",
+            user: process.env.USER,
+            pass: process.env.PASSWORD,
           },
         });
 
