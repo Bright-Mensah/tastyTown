@@ -32,24 +32,12 @@ const SignIn = ({ navigation }) => {
   const [animate, setAnimate] = useState(false);
   const [checked, setChecked] = useState(false);
 
-  // check if the user has already logged in
-  useEffect(() => {
-    const userLoggedInBefore = async () => {
-      // check if the user has activated the app
-
-      let appActivated = JSON.parse(await AsyncStorage.getItem("activated"));
-
-      if (appActivated) {
-        navigation.replace("home");
-      }
-    };
-    userLoggedInBefore();
-  }, []);
+  useEffect(() => {}, []);
 
   const handleSignIn = () => {
-    // check if all the inputs are empty
     setAnimate(!animate);
 
+    // check if all the inputs are empty
     if (email === "") {
       setTimeout(() => {
         setAnimate(false);
@@ -81,7 +69,11 @@ const SignIn = ({ navigation }) => {
     } else {
       // if all inputs are filled and not empty
       // go with the next step to login the user in
-      const userLogin = () => {
+      const userLogin = async () => {
+        // check if the user has activated the app
+
+        console.log("not");
+
         fetch("http://localhost:4500/login", {
           method: "POST",
           headers: {

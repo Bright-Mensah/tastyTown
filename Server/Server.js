@@ -4,6 +4,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import userSchema from "./Schema/userSchema.js";
 import nodemailer from "nodemailer";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -13,7 +16,8 @@ app.use(bodyParser.json());
 
 // mongodb connection
 
-const connection = "mongodb://localhost:27017/tastyTown";
+const connection = process.env.MONGO_DB_CONNECTION;
+// const connection = "mongodb+srv://Bright:Mensah12@cluster0.x0dii2e.mongodb.net/?retryWrites=true&w=majority"
 
 mongoose
   .connect(connection)
@@ -276,6 +280,6 @@ app.put("/user/:email", function (req, res) {
       }
     });
 });
+const PORT = process.env.PORT || 4500;
 
-const PORT = 4500;
-app.listen(PORT, () => console.log(`Server started on ${PORT}`));
+app.listen(PORT, () => console.log(`Server is working on PORT ${PORT}`));
