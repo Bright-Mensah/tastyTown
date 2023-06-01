@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Home = () => {
+const Favourite = () => {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Favourite</Text>
     </View>
   );
 };
 
-export default Home;
+export default Favourite;
 
 const styles = StyleSheet.create({});

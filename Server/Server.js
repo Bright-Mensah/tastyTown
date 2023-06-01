@@ -5,6 +5,10 @@ import mongoose from "mongoose";
 import userSchema from "./Schema/userSchema.js";
 import nodemailer from "nodemailer";
 import * as dotenv from "dotenv";
+import path from "path";
+import { getGlobals } from "common-es";
+
+const { __dirname, __filename } = getGlobals(import.meta.url);
 
 dotenv.config();
 
@@ -13,6 +17,11 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, "views/js")));
+
+// setting view engine to ejs
+app.set("view engine", "ejs");
 
 // mongodb connection
 
@@ -24,7 +33,8 @@ mongoose
   .catch(() => console.log("something went wrong."));
 
 app.get("/", (req, res) => {
-  res.send("Welcome to tasty town server");
+  // res.send("Welcome to tasty town server");
+  res.render("index");
 });
 
 // signup
@@ -67,7 +77,16 @@ app.post("/login", (req, res) => {
       if (emailExist) {
         // if email exist compare the password for the account with your password
         const inputPassword = req.body.password;
-        if (inputPassword === emailExist.password) {
+        if (
+          inputPassword === emailExist.password &&
+          emailExist.userActivated === "yes"
+        ) {
+          res.send({
+            msg: "login successful and account is activated",
+            status: "success",
+            activated: true,
+          });
+        } else if (inputPassword === emailExist.password) {
           res.send({ msg: "login successful", status: "success" });
         } else {
           res.send({
@@ -279,6 +298,31 @@ app.put("/user/:email", function (req, res) {
       }
     });
 });
+
+// activate user
+app.put("/userActivated/:email", function (req, res) {
+  userSchema
+    .findOneAndUpdate(
+      { email: req.params.email },
+      {
+        userActivated: req.body.userActivated,
+      }
+    )
+    .then(() => {
+      res.send({ msg: "user Activated", status: "success" });
+    })
+    .catch(() => {
+      res.send({ msg: "something went wrong...", status: "error" });
+    });
+});
+
+// get all users
+app.get("/users", (req, res) => {
+  userSchema.find({}).then((result) => {
+    res.send({ msg: "all users account", data: result });
+  });
+});
+
 const PORT = process.env.PORT || 4500;
 
 app.listen(PORT, () => console.log(`Server is working on PORT ${PORT}`));

@@ -14,6 +14,7 @@ const userSchema = new Schema(
     created_at: { type: String, default: Date },
     passwordResetCode: { type: String },
     updated_at: { type: String, default: Date },
+    userActivated: { type: String, default: "no" },
   },
   { collection: "users" }
 );

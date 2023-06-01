@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Main from "./Components/Main";
+
 import OnBoardingShow from "./Components/OnBoardingShow";
 import SignIn from "./Components/SignIn";
 import SignUp from "./Components/SignUp";
@@ -18,7 +19,8 @@ import ForgetPassword2 from "./Components/ForgetPasswordStep3";
 import ForgetPasswordStep2 from "./Components/ForgetPasswordStep2";
 import ForgetPasswordStep3 from "./Components/ForgetPasswordStep3";
 import ResetPassword from "./Components/ResetPassword";
-import Home from "./Components/Main/Home";
+import mainScreen from "./Components/Main/Main";
+
 export default function App() {
   const [showStatusBar, setShowStatusBar] = useState(true);
   const [animate, setAnimation] = useState("fadeInDownBig");
@@ -168,8 +170,8 @@ export default function App() {
             }}
           />
           <Stack.Screen
-            name="home"
-            component={Home}
+            name="mainScreen"
+            component={mainScreen}
             options={{
               animationTypeForReplace: "push",
               animation: "fade_from_bottom",
@@ -179,7 +181,10 @@ export default function App() {
             }}
           />
         </Stack.Navigator>
+
+        {/* bottom tabs */}
       </NavigationContainer>
+
       <FlashMessage position={"bottom"} />
     </>
   );

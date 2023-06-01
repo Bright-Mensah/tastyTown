@@ -34,7 +34,7 @@ const SignIn = ({ navigation }) => {
 
   useEffect(() => {}, []);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     setAnimate(!animate);
 
     // check if all the inputs are empty
@@ -70,10 +70,6 @@ const SignIn = ({ navigation }) => {
       // if all inputs are filled and not empty
       // go with the next step to login the user in
       const userLogin = async () => {
-        // check if the user has activated the app
-
-        console.log("not");
-
         fetch("http://localhost:4500/login", {
           method: "POST",
           headers: {
@@ -90,9 +86,11 @@ const SignIn = ({ navigation }) => {
           })
           .then((result) => {
             // console.log(result);
-            if (result.status === "success") {
+            if (result.status === "success" && result.activated) {
               AsyncStorage.setItem("email", JSON.stringify(email));
-              AsyncStorage.setItem("loginYes", JSON.stringify("yes"));
+              console.log(email);
+
+              // check if  user or account has been activated
 
               setAnimate(false);
 
@@ -102,7 +100,22 @@ const SignIn = ({ navigation }) => {
                 icon: "success",
               });
 
-              // navigate to the profile step1 to complete your profile
+              // navigate to main
+
+              setTimeout(() => {
+                navigation.navigate("mainScreen");
+              }, 3000);
+            } else if (result.status === "success") {
+              AsyncStorage.setItem("email", JSON.stringify(email));
+              console.log(email);
+              setAnimate(false);
+              showMessage({
+                message: result.msg,
+                type: "success",
+                icon: "auto",
+              });
+              // navigate to profile 1 to start setting up account for activation
+
               setTimeout(() => {
                 navigation.navigate("profileMain");
               }, 3000);
@@ -172,7 +185,7 @@ const SignIn = ({ navigation }) => {
           >
             <Title title={"Password"} bottom={responsiveHeight(1)} />
             <CustomInput
-              placeholder={"You@gmail.com"}
+              placeholder={"******"}
               onchangeText={(e) => setPassword(e)}
               value={password}
               bdWdith={1}
