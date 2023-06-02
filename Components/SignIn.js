@@ -88,7 +88,7 @@ const SignIn = ({ navigation }) => {
             // console.log(result);
             if (result.status === "success" && result.activated) {
               AsyncStorage.setItem("email", JSON.stringify(email));
-              console.log(email);
+              // console.log(email);
 
               // check if  user or account has been activated
 
@@ -103,11 +103,15 @@ const SignIn = ({ navigation }) => {
               // navigate to main
 
               setTimeout(() => {
-                navigation.navigate("mainScreen");
+                navigation.navigate("mainScreen", {
+                  email: email,
+                });
               }, 3000);
+              setEmail("");
+              setPassword("");
             } else if (result.status === "success") {
               AsyncStorage.setItem("email", JSON.stringify(email));
-              console.log(email);
+              // console.log(email);
               setAnimate(false);
               showMessage({
                 message: result.msg,
@@ -115,6 +119,8 @@ const SignIn = ({ navigation }) => {
                 icon: "auto",
               });
               // navigate to profile 1 to start setting up account for activation
+              setEmail("");
+              setPassword("");
 
               setTimeout(() => {
                 navigation.navigate("profileMain");

@@ -12,7 +12,9 @@ import { GRAY, ORANGE } from "../../helpers/Colors";
 
 const Tab = createBottomTabNavigator();
 
-const Main = () => {
+const Main = ({ route }) => {
+  const { email } = route.params;
+
   return (
     <Fragment>
       <Tab.Navigator
@@ -43,7 +45,11 @@ const Main = () => {
         <Tab.Screen name="Favourite" component={Favourite} />
         <Tab.Screen name="Cart" component={Cart} />
         {/* <Tab.Screen name="Details" component={Details} /> */}
-        <Tab.Screen name="Settings" component={Settings} />
+        {/* <Tab.Screen name="Settings">{() => <Settings {...props} />}</Tab.Screen> */}
+        <Tab.Screen
+          name="Settings"
+          children={(props) => <Settings email={email} {...props} />}
+        />
       </Tab.Navigator>
     </Fragment>
   );

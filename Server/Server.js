@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import userSchema from "./Schema/userSchema.js";
+import AdminSchema from "./Schema/AdminSchema.js";
 import nodemailer from "nodemailer";
 import * as dotenv from "dotenv";
 import path from "path";
@@ -18,10 +19,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, "views/js")));
+app.use(express.urlencoded({ extended: true }));
 
 // setting view engine to ejs
-app.set("view engine", "ejs");
 
 // mongodb connection
 
@@ -32,9 +32,16 @@ mongoose
   .then(() => console.log("connected successfully"))
   .catch(() => console.log("something went wrong."));
 
+// admin login page
 app.get("/", (req, res) => {
   // res.send("Welcome to tasty town server");
-  res.render("index");
+  res.sendFile(__dirname + "/views/");
+});
+
+// admin signup page
+app.get("/signup", (req, res) => {
+  // res.send("Welcome to tasty town server");
+  res.sendFile(__dirname + "/views/signup.html");
 });
 
 // signup
@@ -320,6 +327,74 @@ app.put("/userActivated/:email", function (req, res) {
 app.get("/users", (req, res) => {
   userSchema.find({}).then((result) => {
     res.send({ msg: "all users account", data: result });
+  });
+});
+
+// get  user details
+app.get("/user/:email", (req, res) => {
+  userSchema
+    .findOne({ email: req.params.email })
+    .then((result) => {
+      res.json({ msg: "user details ", data: result, status: "success" });
+    })
+    .catch((error) =>
+      res.send({ msg: "something went wrong, try again!!", status: "error" })
+    );
+});
+
+//////////// ADMIN ////////////
+
+// add admin to the db
+
+app.post("/admin", (req, res) => {
+  const { email, password, name } = req.body;
+  // check if admin already exist
+
+  AdminSchema.findOne({ email: email }).then((adminExist) => {
+    if (adminExist) {
+      res.send({ msg: "admin already exist", status: "error" });
+    } else {
+      // if admin does not exist then sign the admin up
+      let admin = new AdminSchema({
+        name: name,
+        email: email,
+        password: password,
+      });
+
+      admin
+        .save()
+        .then(() => {
+          res
+            .status(200)
+            .send({ msg: "Admin added successfully", status: "success" });
+        })
+        .catch(() =>
+          res
+            .status(400)
+            .send({ msg: "something went wrong, try again!!", status: "error" })
+        );
+    }
+  });
+});
+
+// admin login
+app.post("/adminLogin", function (req, res) {
+  console.log(req.body);
+  const { email, password } = req.body;
+  userSchema.findOne({ email: email }).then((adminExist) => {
+    if (adminExist) {
+      // if email exist compare password with the email
+      {
+        password === adminExist.password
+          ? res.send({ msg: "admin login success", status: "success" })
+          : res.send({
+              msg: "either email or password is incorrect",
+              status: "failed",
+            });
+      }
+    } else {
+      res.send({ msg: "login failed", status: "noAccount" });
+    }
   });
 });
 
