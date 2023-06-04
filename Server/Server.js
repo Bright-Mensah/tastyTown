@@ -32,18 +32,6 @@ mongoose
   .then(() => console.log("connected successfully"))
   .catch(() => console.log("something went wrong."));
 
-// admin login page
-app.get("/", (req, res) => {
-  // res.send("Welcome to tasty town server");
-  res.sendFile(__dirname + "/views/");
-});
-
-// admin signup page
-app.get("/signup", (req, res) => {
-  // res.send("Welcome to tasty town server");
-  res.sendFile(__dirname + "/views/signup.html");
-});
-
 // signup
 app.post("/signup", (req, res) => {
   // check if user already exist
@@ -344,8 +332,24 @@ app.get("/user/:email", (req, res) => {
 
 //////////// ADMIN ////////////
 
-// add admin to the db
+// admin login page
+app.get("/", (req, res) => {
+  // res.send("Welcome to tasty town server");
+  res.sendFile(__dirname + "/views/signin.html");
+});
 
+// admin signup page
+app.get("/signup", (req, res) => {
+  // res.send("Welcome to tasty town server");
+  res.sendFile(__dirname + "/views/signup.html");
+});
+
+// admin home
+app.get("/home", (req, res) => {
+  res.sendFile(__dirname + "/views/");
+});
+
+// signup admin to the db
 app.post("/admin", (req, res) => {
   const { email, password, name } = req.body;
   // check if admin already exist
@@ -379,9 +383,8 @@ app.post("/admin", (req, res) => {
 
 // admin login
 app.post("/adminLogin", function (req, res) {
-  console.log(req.body);
   const { email, password } = req.body;
-  userSchema.findOne({ email: email }).then((adminExist) => {
+  AdminSchema.findOne({ email: email }).then((adminExist) => {
     if (adminExist) {
       // if email exist compare password with the email
       {
@@ -393,7 +396,10 @@ app.post("/adminLogin", function (req, res) {
             });
       }
     } else {
-      res.send({ msg: "login failed", status: "noAccount" });
+      res.send({
+        msg: "there's no account with the provided details",
+        status: "noAccount",
+      });
     }
   });
 });
